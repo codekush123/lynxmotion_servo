@@ -12,7 +12,7 @@ bus = serial.Serial(
     timeout=1
 )
 
-servo_ids = ['24', '39','27']
+servo_ids = ['24', '39','27', '34'. '38']
 
 amplitude = 10
 max_amplitude = 30
