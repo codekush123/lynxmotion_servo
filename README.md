@@ -156,18 +156,13 @@ Contributions, suggestions, and collaborations are welcome!
 
 ---
 
-## 💬 License
-
-This project is open source and licensed under the MIT License.
-
----
-
 ## 📷 Gallery
 
-> _Add photos or videos of your robot here!_  
-> _Show it in motion, close-up of the C bracket connections, or the snake shape._
+![Project Ongoing](img/photo1.jpg)
 
----
+--------------------
+
+![Project Ongoing](img/photo2.jpg)
 
 ## ⭐ Conclusion
 
