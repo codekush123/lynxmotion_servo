@@ -29,7 +29,7 @@ Each Lynxmotion servo has an ID (a number) that is used in the communication. In
 
 ## 🚨 Overview
 
-This project presents a **snake-inspired robotic system** using 11 servo motors, designed to replicate snake-like locomotion. The robot uses a traveling sine wave motion to navigate through narrow spaces and difficult terrain, with additional tires on the first and last segments to improve movement efficiency.
+This project presents a **snake-inspired robotic system** using 6 servo motors, designed to replicate snake-like locomotion. The robot uses a traveling sine wave motion to navigate through narrow spaces and difficult terrain, with additional tires on the first segments to improve movement efficiency.
 
 Inspired by biological snakes and their ability to move flexibly in confined environments, this robot is designed as a **potential solution for search and rescue missions** in disaster-affected regions such as Japan, which are prone to frequent earthquakes and tsunamis.
 
@@ -51,11 +51,12 @@ By mimicking this natural locomotion, our robotic snake aims to **reach trapped 
 
 ### ✨ Hardware
 
-- **Servos**: 11 Lynxmotion servo motors.
+- **Servos**: 6 Lynxmotion servo motors.
 - **Mounting**: Each servo connected using C brackets to create a continuous articulated body.
 - **Tires**: First and last segments equipped with wheels (tires) to improve traction and push/pull capabilities.
 - **Controller**: Raspberry Pi Zero (small form factor, low power consumption).
 - **Power supply**: External battery pack capable of supporting all servos simultaneously.
+- **Operation**: We are planning to operate through bluetooth android app by using LSS-ADA Board. 
 
 ### 🧬 Motion Principle
 
