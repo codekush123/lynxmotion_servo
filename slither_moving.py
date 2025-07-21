@@ -30,6 +30,12 @@ def move_servo(sid, angle, duration=50):
 
 try:
     while True:
+        bus.write(f'#38LED5\r'.encode('utf-8'))
+        bus.write(f'#33LED6\r'.encode('utf-8'))
+        bus.write(f'#39LED5\r'.encode('utf-8'))
+        bus.write(f'#35LED6\r'.encode('utf-8'))
+        bus.write(f'#05LED5\r'.encode('utf-8'))
+        bus.write(f'#32LED6\r'.encode('utf-8'))
         bus.write(f'#38WR60\r'.encode('utf-8'))  
 
         for idx, sid in enumerate(servo_ids[1:]):  
@@ -43,7 +49,13 @@ try:
 except KeyboardInterrupt:
     print("Interrupted! Returning all servos to neutral...")
 
-    bus.write(f'#38WR0\r'.encode('utf-8'))  
+    bus.write(f'#38WR0\r'.encode('utf-8'))
+    bus.write(f'#38LED0\r'.encode('utf-8'))
+    bus.write(f'#33LED0\r'.encode('utf-8'))
+    bus.write(f'#39LED0\r'.encode('utf-8'))
+    bus.write(f'#35LED0\r'.encode('utf-8'))
+    bus.write(f'#05LED0\r'.encode('utf-8'))
+    bus.write(f'#32LED0\r'.encode('utf-8'))
 
     for sid in servo_ids[1:]:  # Skip '38'
         move_servo(sid, 0, duration=500)
