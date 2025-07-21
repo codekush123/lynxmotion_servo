@@ -2,9 +2,8 @@ from time import sleep
 import math
 import serial
 
-# Setup UART Serial (for Bluetooth serial, use /dev/rfcomm0)
 bus = serial.Serial(
-    port='/dev/rfcomm0',  # Change from /dev/ttyS0 to /dev/rfcomm0
+    port='/dev/rfcomm0',  
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -27,7 +26,13 @@ def move_servo(sid, angle, duration=50):
 
 def reset_servos():
     print("Resetting servos to neutral...")
-    bus.write(f'#38WR0\r'.encode('utf-8'))  # Disable servo power
+    bus.write(f'#38LED0\r'.encode('utf-8'))
+    bus.write(f'#33LED0\r'.encode('utf-8'))
+    bus.write(f'#39LED0\r'.encode('utf-8'))
+    bus.write(f'#35LED0\r'.encode('utf-8'))
+    bus.write(f'#05LED0\r'.encode('utf-8'))
+    bus.write(f'#32LED0\r'.encode('utf-8'))
+    bus.write(f'#38WR0\r'.encode('utf-8'))  
     for sid in servo_ids[1:]:
         move_servo(sid, 0, duration=500)
 
@@ -52,7 +57,13 @@ try:
                 reset_servos()
 
         if running:
-            bus.write(f'#38WR60\r'.encode('utf-8'))  # Enable servo power
+            bus.write(f'#38LED5\r'.encode('utf-8'))
+            bus.write(f'#33LED6\r'.encode('utf-8'))
+            bus.write(f'#39LED5\r'.encode('utf-8'))
+            bus.write(f'#35LED6\r'.encode('utf-8'))
+            bus.write(f'#05LED5\r'.encode('utf-8'))
+            bus.write(f'#32LED6\r'.encode('utf-8'))
+            bus.write(f'#38WR60\r'.encode('utf-8'))  
             for idx, sid in enumerate(servo_ids[1:]):
                 phase = 2 * math.pi * (t / period) + idx * phase_diff
                 angle = amplitude * math.sin(phase)
