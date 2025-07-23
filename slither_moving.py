@@ -11,7 +11,7 @@ bus = serial.Serial(
     timeout=1
 )
 
-servo_ids = ['38', '33', '39', '35', '05', '32']
+servo_ids = ['38','33','39','35','05','29','32']
 
 base_position = 1500
 amplitude = 90      
@@ -35,7 +35,8 @@ try:
         bus.write(f'#39LED5\r'.encode('utf-8'))
         bus.write(f'#35LED6\r'.encode('utf-8'))
         bus.write(f'#05LED5\r'.encode('utf-8'))
-        bus.write(f'#32LED6\r'.encode('utf-8'))
+        bus.write(f'#29LED6\r'.encode('utf-8'))
+        bus.write(f'#32LED5\r'.encode('utf-8'))
         bus.write(f'#38WR60\r'.encode('utf-8'))  
 
         for idx, sid in enumerate(servo_ids[1:]):  
@@ -55,6 +56,7 @@ except KeyboardInterrupt:
     bus.write(f'#39LED0\r'.encode('utf-8'))
     bus.write(f'#35LED0\r'.encode('utf-8'))
     bus.write(f'#05LED0\r'.encode('utf-8'))
+    bus.write(f'#29LED0\r'.encode('utf-8'))
     bus.write(f'#32LED0\r'.encode('utf-8'))
 
     for sid in servo_ids[1:]:  # Skip '38'
