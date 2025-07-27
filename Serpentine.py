@@ -12,16 +12,15 @@ bus = serial.Serial(
 )
 
 servo_ids = ['38', '33', '39', '35', '05', '29', '32', '31', '30', '34', '36', '37']
-
-base_position = 1500  
-amplitude = 40 * (1000 / 90)  
-lag = 0.5712  
-frequency = 1
-right_offset = 5 * (1000 / 90)  
-left_offset = -5 * (1000 / 90)  
-offset = 6 * (1000 / 90)  
-delay_time = 0.007  
-start_pause = 5  
+base_position = 1500  # Neutral position for servos
+amplitude = 40 * (1000 / 90)  #wave in degrees
+lag = 0.5712  #phase shift in radians
+frequency = 1 #speed
+right_offset = 5 * (1000 / 90)  #right turn
+left_offset = -5 * (1000 / 90)  #left turn
+offset = 6 * (1000 / 90)  #first three servos offset
+delay_time = 0.007  #time between movements in seconds
+start_pause = 3 #initial pause
 
 def angle_to_pulse(angle):
     return int(500 + (angle / 180) * 2000)
