@@ -1,8 +1,6 @@
 from time import sleep
 import math
 import serial
-import keyboard
-
 bus = serial.Serial(
     port='/dev/ttyS0',
     baudrate=115200,
@@ -78,22 +76,29 @@ def main():
     try:
         set_initial_position()
         current_direction = 'forward'
+        print("Controls: [f]orward, re[v]erse, [l]eft, [r]ight, [s]top")
         while True:
-            if keyboard.is_pressed('f'):
+            user_input = input("Enter command (f/v/l/r/s): ").strip().lower()
+            if user_input == 'f':
                 current_direction = 'forward'
-            elif keyboard.is_pressed('v'):
+            elif user_input == 'v':
                 current_direction = 'reverse'
-            elif keyboard.is_pressed('l'):
+            elif user_input == 'l':
                 current_direction = 'left'
-            elif keyboard.is_pressed('r'):
+            elif user_input == 'r':
                 current_direction = 'right'
-            elif keyboard.is_pressed('s'):
+            elif user_input == 's':
                 break
+            else:
+                print("Invalid input. Please enter f, v, l, r, or s.")
+                continue
             current_direction = serpentine_motion(current_direction)
     except KeyboardInterrupt:
-        pass
-    finally:
-        bus.close()
 
+        print("Interrupted! Returning all servos to neutral...")
+        for servo_id in servo_ids:
+            send_servo_command(servo_id, angle_to_pulse(90), 1000)
+        bus.close()
+        print("Bus closed.")
 if __name__ == "__main__":
     main()

@@ -3,7 +3,7 @@ import serial
 
 # Initialize serial connection
 bus = serial.Serial(
-    port='/dev/ttyS0',
+    port='/dev/serial0',  # More reliable than /dev/ttyS0
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -16,19 +16,21 @@ servo_ids = ['38', '33', '39', '35', '05', '29', '32', '31', '30']
 
 # Define variables
 flex = 45  # Angle to flex a joint
-delay_time = 0.005  # Delay between phases (5 ms)
-smoothness_delay = 0.015  # Delay for smooth transitions (15 ms)
+delay_time = 0.01  # Increased delay between phases
+smoothness_delay = 0.03  # Increased smooth transition time
 start_pause = 3  # Initial delay (3 s)
-base_position = 1500  # Center position in microseconds (90 degrees)
 
 # Convert angle to pulse width (0-180 degrees to 500-2500 µs)
 def angle_to_pulse(angle):
+    angle = max(0, min(180, angle))  # Clamp to valid range
     return int(500 + (angle / 180) * 2000)
 
 # Send servo command over UART
 def send_servo_command(servo_id, position, time_ms=15):
     command = f"#{servo_id}P{position}T{time_ms}\r"
     bus.write(command.encode())
+    bus.flush()  # Ensure transmission
+    # print(f"Sent to Servo {servo_id}: {command.strip()}")  # Uncomment for debugging
 
 # Set initial snake position
 def set_initial_position():
@@ -39,92 +41,46 @@ def set_initial_position():
 
 # Rectilinear forward motion
 def forward_motion():
-    # Phase 1: s9, s8, s7
-    for pos in range(flex + 1):
-        s9_angle = 90 - pos
-        s8_angle = 90 + 2 * pos
-        s7_angle = 90 - pos
-        send_servo_command(servo_ids[8], angle_to_pulse(s9_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[7], angle_to_pulse(s8_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[6], angle_to_pulse(s7_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
+    # Each phase corresponds to 3–4 servos moving in coordinated sequence
+    phases = [
+        (8, 7, 6),
+        (8, 7, 6, 5),
+        (7, 6, 5, 4),
+        (6, 5, 4, 3),
+        (5, 4, 3, 2),
+        (4, 3, 2, 1),
+        (3, 2, 1)
+    ]
+    
+    for phase_index, phase in enumerate(phases):
+        for pos in range(flex + 1):
+            angles = []
+            if phase_index == 0:
+                angles = [90 - pos, 90 + 2 * pos, 90 - pos]
+            elif phase_index == 1:
+                angles = [90 - flex + pos, 90 + 2 * flex - 3 * pos,
+                          90 - flex + 3 * pos, 90 - pos]
+            elif phase_index == 2:
+                angles = [90 - flex + pos, 90 + 2 * flex - 3 * pos,
+                          90 - flex + 3 * pos, 90 - pos]
+            elif phase_index == 3:
+                angles = [90 - flex + pos, 90 + 2 * flex - 3 * pos,
+                          90 - flex + 3 * pos, 90 - pos]
+            elif phase_index == 4:
+                angles = [90 - flex + pos, 90 + 2 * flex - 3 * pos,
+                          90 - flex + 3 * pos, 90 - pos]
+            elif phase_index == 5:
+                angles = [90 - flex + pos, 90 + 2 * flex - 3 * pos,
+                          90 - flex + 3 * pos, 90 - pos]
+            elif phase_index == 6:
+                angles = [90 - flex + pos, 90 + 2 * flex - 2 * pos,
+                          90 - flex + pos]
 
-    # Phase 2: s9, s8, s7, s6
-    for pos in range(flex + 1):
-        s9_angle = 90 - flex + pos
-        s8_angle = 90 + 2 * flex - 3 * pos
-        s7_angle = 90 - flex + 3 * pos
-        s6_angle = 90 - pos
-        send_servo_command(servo_ids[8], angle_to_pulse(s9_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[7], angle_to_pulse(s8_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[6], angle_to_pulse(s7_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[5], angle_to_pulse(s6_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
-
-    # Phase 3: s8, s7, s6, s5
-    for pos in range(flex + 1):
-        s8_angle = 90 - flex + pos
-        s7_angle = 90 + 2 * flex - 3 * pos
-        s6_angle = 90 - flex + 3 * pos
-        s5_angle = 90 - pos
-        send_servo_command(servo_ids[7], angle_to_pulse(s8_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[6], angle_to_pulse(s7_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[5], angle_to_pulse(s6_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[4], angle_to_pulse(s5_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
-
-    # Phase 4: s7, s6, s5, s4
-    for pos in range(flex + 1):
-        s7_angle = 90 - flex + pos
-        s6_angle = 90 + 2 * flex - 3 * pos
-        s5_angle = 90 - flex + 3 * pos
-        s4_angle = 90 - pos
-        send_servo_command(servo_ids[6], angle_to_pulse(s7_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[5], angle_to_pulse(s6_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[4], angle_to_pulse(s5_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[3], angle_to_pulse(s4_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
-
-    # Phase 5: s6, s5, s4, s3
-    for pos in range(flex + 1):
-        s6_angle = 90 - flex + pos
-        s5_angle = 90 + 2 * flex - 3 * pos
-        s4_angle = 90 - flex + 3 * pos
-        s3_angle = 90 - pos
-        send_servo_command(servo_ids[5], angle_to_pulse(s6_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[4], angle_to_pulse(s5_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[3], angle_to_pulse(s4_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[2], angle_to_pulse(s3_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
-
-    # Phase 6: s5, s4, s3, s2
-    for pos in range(flex + 1):
-        s5_angle = 90 - flex + pos
-        s4_angle = 90 + 2 * flex - 3 * pos
-        s3_angle = 90 - flex + 3 * pos
-        s2_angle = 90 - pos
-        send_servo_command(servo_ids[4], angle_to_pulse(s5_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[3], angle_to_pulse(s4_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[2], angle_to_pulse(s3_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[1], angle_to_pulse(s2_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
-
-    # Phase 7: s4, s3, s2
-    for pos in range(flex + 1):
-        s4_angle = 90 - flex + pos
-        s3_angle = 90 + 2 * flex - 2 * pos
-        s2_angle = 90 - flex + pos
-        send_servo_command(servo_ids[3], angle_to_pulse(s4_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[2], angle_to_pulse(s3_angle), int(smoothness_delay * 1000))
-        send_servo_command(servo_ids[1], angle_to_pulse(s2_angle), int(smoothness_delay * 1000))
-        sleep(smoothness_delay)
-    sleep(delay_time)
+            for i, sid in enumerate(phase):
+                pulse = angle_to_pulse(angles[i])
+                send_servo_command(servo_ids[sid], pulse, int(smoothness_delay * 1000))
+            sleep(smoothness_delay)
+        sleep(delay_time)
 
 # Main execution
 def main():
@@ -133,9 +89,10 @@ def main():
         while True:
             forward_motion()
     except KeyboardInterrupt:
-        pass
+        print("\nInterrupted by user.")
     finally:
         bus.close()
+        print("Serial connection closed.")
 
 if __name__ == "__main__":
     main()
