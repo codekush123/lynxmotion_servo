@@ -10,13 +10,12 @@ bus = serial.Serial(
     timeout = 1
 )
 
-servoID='3' 
+servo_id='3' 
 
 
 print('Moving to 0 degrees')
-bus.write(f'#{servoID}D0\r'.encode()) 
+bus.write(f'#{servo_id}D0\r'.encode()) 
 sleep(3)
 
-print("Finished with the servo. Closing serial port.")
 bus.close()
 del bus
