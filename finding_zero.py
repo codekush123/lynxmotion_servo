@@ -11,9 +11,6 @@ bus = serial.Serial(
 )
 
 servo_id='3' 
-
-
-print('Moving to 0 degrees')
 bus.write(f'#{servo_id}D0\r'.encode()) 
 sleep(3)
 
