@@ -15,7 +15,7 @@ servo_ids = ['38','33','39','35','05','29','32']
 
 base_position = 1500
 amplitude = 90      
-period = 1          
+period = 3       
 phase_diff = math.pi / 5  
 
 t = 0
@@ -37,9 +37,8 @@ try:
         bus.write(f'#05LED5\r'.encode('utf-8'))
         bus.write(f'#29LED6\r'.encode('utf-8'))
         bus.write(f'#32LED5\r'.encode('utf-8'))
-        bus.write(f'#38WR60\r'.encode('utf-8'))  
 
-        for idx, sid in enumerate(servo_ids[1:]):  
+        for idx, sid in enumerate(servo_ids):  
             phase = 2 * math.pi * (t / period) + idx * phase_diff
             angle = amplitude * math.sin(phase)
             move_servo(sid, angle, duration=50)
@@ -50,7 +49,6 @@ try:
 except KeyboardInterrupt:
     print("Interrupted! Returning all servos to neutral...")
 
-    bus.write(f'#38WR0\r'.encode('utf-8'))
     bus.write(f'#38LED0\r'.encode('utf-8'))
     bus.write(f'#33LED0\r'.encode('utf-8'))
     bus.write(f'#39LED0\r'.encode('utf-8'))
@@ -58,9 +56,15 @@ except KeyboardInterrupt:
     bus.write(f'#05LED0\r'.encode('utf-8'))
     bus.write(f'#29LED0\r'.encode('utf-8'))
     bus.write(f'#32LED0\r'.encode('utf-8'))
-
-    for sid in servo_ids[1:]:  # Skip '38'
-        move_servo(sid, 0, duration=500)
+    bus.write(f'#27D90\r'.encode('utf-8'))  # Reset servo 27 to neutral
+    bus.write(f'#05D85\r'.encode('utf-8'))  # Reset servo 05 to neutral
+    bus.write(f'#33D80\r'.encode('utf-8'))  # Reset servo 33 to neutral
+    bus.write(f'#35D75\r'.encode('utf-8'))  # Reset servo 35 to neutral
+    bus.write(f'#29D70\r'.encode('utf-8'))
+    bus.write(f'#39D65\r'.encode('utf-8'))
+    bus.write(f'#32D60\r'.encode('utf-8'))
+    bus.write(f'#25D55\r'.encode('utf-8'))
+    bus.write(f'#24D50\r'.encode('utf-8'))
 
     bus.close()
     print("Bus closed.")
