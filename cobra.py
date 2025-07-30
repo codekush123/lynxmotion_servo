@@ -29,10 +29,9 @@ def set_initial_pose():
 
 def cobra_movement(cycles=3, speed=100):
     print("Starting cobra movement...")
-    cobra_ids = ['05', '33', '35']  # base to head
+    cobra_ids = ['05', '33', '35']  
 
-    # Define the wave pattern for a cobra-like curve
-    wave_angles = [90, 80, 40, 80, 70, 70, 50, 10]  # wave sequ>
+    wave_angles = [90, 80, 40, 80, 70, 70, 50, 10]  
     for _ in range(cycles):
         for offset in range(len(wave_angles)):
             for i, sid in enumerate(cobra_ids):

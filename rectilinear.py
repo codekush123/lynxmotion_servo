@@ -1,9 +1,8 @@
 from time import sleep
 import serial
 
-# Initialize serial connection
 bus = serial.Serial(
-    port='/dev/serial0',  # More reliable than /dev/ttyS0
+    port='/dev/serial0',  
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
@@ -11,37 +10,30 @@ bus = serial.Serial(
     timeout=1
 )
 
-# Define servo IDs (9 motors)
 servo_ids = ['38', '33', '39', '35', '05', '29', '32', '31', '30']
 
-# Define variables
 flex = 45  # Angle to flex a joint
 delay_time = 0.01  # Increased delay between phases
 smoothness_delay = 0.03  # Increased smooth transition time
 start_pause = 3  # Initial delay (3 s)
 
-# Convert angle to pulse width (0-180 degrees to 500-2500 µs)
 def angle_to_pulse(angle):
     angle = max(0, min(180, angle))  # Clamp to valid range
     return int(500 + (angle / 180) * 2000)
 
-# Send servo command over UART
 def send_servo_command(servo_id, position, time_ms=15):
     command = f"#{servo_id}P{position}T{time_ms}\r"
     bus.write(command.encode())
     bus.flush()  # Ensure transmission
-    # print(f"Sent to Servo {servo_id}: {command.strip()}")  # Uncomment for debugging
+    # print(f"Sent to Servo {servo_id}: {command.strip()}")  
 
-# Set initial snake position
 def set_initial_position():
     send_servo_command(servo_ids[0], angle_to_pulse(0), 1000)  # s1 at 0 degrees
     for i in range(1, 9):  # s2-s9 at 90 degrees
         send_servo_command(servo_ids[i], angle_to_pulse(90), 1000)
     sleep(start_pause)
 
-# Rectilinear forward motion
 def forward_motion():
-    # Each phase corresponds to 3–4 servos moving in coordinated sequence
     phases = [
         (8, 7, 6),
         (8, 7, 6, 5),
@@ -82,7 +74,6 @@ def forward_motion():
             sleep(smoothness_delay)
         sleep(delay_time)
 
-# Main execution
 def main():
     try:
         set_initial_position()

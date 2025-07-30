@@ -12,7 +12,7 @@ bus = serial.Serial(
 )
 
 servo_ids = ['27', '05', '33', '35', '29', '39', '32', '25', '24']
-base_position = 1500  # Neutral position in microseconds (90 degrees)
+base_position = 1500  
 amplitude = 90
 period = 1.5
 phase_diff = math.pi / 3

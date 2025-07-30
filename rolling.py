@@ -12,10 +12,8 @@ bus = serial.Serial(
     timeout=1
 )
 
-# IDs of 9 servos in order (assumed clockwise or counterclockwise layout)
 servo_ids = ['27', '05', '33', '35', '29', '39', '32', '25', '24']
 
-# Parameters
 flex = 45              # Circle amplitude
 delay_time = 0.15      # 150 ms between rolling steps
 smoothnessDelay = 40   # 40 ms between micro-steps
@@ -41,17 +39,14 @@ def set_initial_pose():
 def form_circle_pose(center_angle=90):
     print("Forming circular pose with inward-facing servos...")
     n = len(servo_ids)
-    radius = 1  # Assume unit radius; only angle matters
-
+    radius = 1  
     for i, sid in enumerate(servo_ids):
         angle_rad = 2 * math.pi * i / n
         x = radius * math.cos(angle_rad)
         y = radius * math.sin(angle_rad)
 
-        # Calculate angle pointing toward the center (invert x and y)
         servo_angle = center_angle + math.degrees(math.atan2(-y, -x))
 
-        # Clamp to servo limits (0–180)
         servo_angle = max(0, min(180, servo_angle))
         send_servo_command(sid, servo_angle, 500)
 
@@ -61,13 +56,11 @@ def roll_forward():
     global rollState
     s = {i+1: servo_ids[i] for i in range(len(servo_ids))}
 
-    # Step 0: Form circle before rolling
     if rollState == 0:
         form_circle_pose()
         rollState = 1
         sleep(1)
 
-    # Rolling steps
     for step in range(1, 9):
         print(f"Rolling step {step}")
         sleep(delay_time / 1000)
@@ -146,7 +139,7 @@ def roll_forward():
                 send_servo_command(s[9], 90-flex+pos, smoothnessDelay)
             sleep(smoothnessDelay / 1000)
 
-    rollState = 0  # Reset to re-form circle next time
+    rollState = 0  
     sleep(1)
 
 def main():
