@@ -165,6 +165,19 @@ Contributions, suggestions, and collaborations are welcome!
 
 ![Project Ongoing](img/photo2.jpg)
 
+![Project Ongoing](img/slithering.jpg)
+
+--------------------
+
+![Project Ongoing](img/half_slithering.jpg)
+
+![Project Ongoing](img/cobra.jpg)
+
+--------------------
+
+![Project Ongoing](img/inch_worm.jpg)
+
+
 ## ⭐ Conclusion
 
 This robotic snake is an innovative step toward **biologically inspired robots for real-world humanitarian missions**. Through continued development and collaboration, it has the potential to become an essential tool in future disaster response scenarios.
